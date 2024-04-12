@@ -1,4 +1,5 @@
-/** Script to remove subsector industry codes, keeping only major sector codes **/
+DATA CLEANING
+/**** Script to remove subsector industry codes, keeping only major sector codes ****/
 
 SELECT [NAICS_Codes]
       ,[NAICS_Industry_Description]
@@ -6,7 +7,7 @@ SELECT [NAICS_Codes]
   WHERE NAICS_Codes = ''
 
 
-  /****** Script to delete the NAICs code column ******/
+/****** Script to delete the NAICs code column ******/
 
 SELECT 
       [NAICS_Industry_Description] AS Industry_Sector
@@ -18,7 +19,7 @@ SELECT
 
 SELECT 
       [NAICS_Industry_Description] AS Industry_Sector,
-	  CASE WHEN NAICS_Industry_Description LIKE '%–%' THEN SUBSTRING(NAICS_Industry_Description, 8, 2) END AS Sector_codes
+	  CASE WHEN NAICS_Industry_Description LIKE '%â€“%' THEN SUBSTRING(NAICS_Industry_Description, 8, 2) END AS Sector_codes
   FROM [SBA].[dbo].[sba_industry_standards]
   WHERE NAICS_Codes = ''
 
@@ -29,7 +30,7 @@ SELECT *
 FROM (
 	SELECT 
 		  [NAICS_Industry_Description] AS Industry_Sector,
-		  CASE WHEN NAICS_Industry_Description LIKE '%–%' THEN SUBSTRING(NAICS_Industry_Description, 8, 2) END AS Sector_codes
+		  CASE WHEN NAICS_Industry_Description LIKE '%â€“%' THEN SUBSTRING(NAICS_Industry_Description, 8, 2) END AS Sector_codes
 	  FROM [SBA].[dbo].[sba_industry_standards]
 	  WHERE NAICS_Codes = ''
 ) MAIN
@@ -42,29 +43,29 @@ SELECT *
 FROM (
 	SELECT 
 		  [NAICS_Industry_Description] AS Industry_Sector,
-		  CASE WHEN NAICS_Industry_Description LIKE '%–%' THEN SUBSTRING(NAICS_Industry_Description, 8, 2) END AS Sector_codes,
-		  CASE WHEN NAICS_Industry_Description LIKE '%–%' THEN ltrim(SUBSTRING(NAICS_Industry_Description, CHARINDEX('–', NAICS_Industry_Description) + 1, LEN(NAICS_Industry_Description))) END AS Industry_SectorName
+		  CASE WHEN NAICS_Industry_Description LIKE '%â€“%' THEN SUBSTRING(NAICS_Industry_Description, 8, 2) END AS Sector_codes,
+		  CASE WHEN NAICS_Industry_Description LIKE '%â€“%' THEN ltrim(SUBSTRING(NAICS_Industry_Description, CHARINDEX('â€“', NAICS_Industry_Description) + 1, LEN(NAICS_Industry_Description))) END AS Industry_SectorName
 	  FROM [SBA].[dbo].[sba_industry_standards]
 	  WHERE NAICS_Codes = ''
 ) MAIN
 WHERE Sector_Codes != ''
 
 
-/** Script to save INTO a new table **/
+/**** Script to save INTO a new table ****/
 
 SELECT *
 INTO SBA_Sector_Codes_Descriptions2
 FROM (
 	SELECT 
 		  [NAICS_Industry_Description] AS Industry_Sector,
-		  CASE WHEN NAICS_Industry_Description LIKE '%–%' THEN SUBSTRING(NAICS_Industry_Description, 8, 2) END AS Sector_codes,
-		  CASE WHEN NAICS_Industry_Description LIKE '%–%' THEN ltrim(SUBSTRING(NAICS_Industry_Description, CHARINDEX('–', NAICS_Industry_Description) + 1, LEN(NAICS_Industry_Description))) END AS Industry_SectorName
+		  CASE WHEN NAICS_Industry_Description LIKE '%â€“%' THEN SUBSTRING(NAICS_Industry_Description, 8, 2) END AS Sector_codes,
+		  CASE WHEN NAICS_Industry_Description LIKE '%â€“%' THEN ltrim(SUBSTRING(NAICS_Industry_Description, CHARINDEX('â€“', NAICS_Industry_Description) + 1, LEN(NAICS_Industry_Description))) END AS Industry_SectorName
 	  FROM [SBA].[dbo].[sba_industry_standards]
 	  WHERE NAICS_Codes = ''
 
 
 
-	  /****** Script to edit and update the table using Insert INTO ******/
+/****** Script to edit and update the table using Insert INTO ******/
 Select 
 	Industry_Sector,
 	Sector_codes,
@@ -81,13 +82,13 @@ Select
 Select 
 	Industry_Sector,
 	Sector_codes,
-
-
- update SBA_Sector_Codes_Descriptions2
+update SBA_Sector_Codes_Descriptions2
  set Industry_SectorName = 'Manufacturing'
  where Sector_codes = 31
 
 
+
+DATA EXPLORATION & ANALYSIS
 
  /****** What are the KPI values for the approved PPP loans? ******/
 SELECT 
@@ -111,7 +112,7 @@ SELECT
 
 
 
-	/****** KPI’s Grouped by Year  ******/
+/****** KPIâ€™s Grouped by Year  ******/
 
 SELECT 
 	YEAR(DateApproved),
@@ -125,9 +126,7 @@ WHERE
 	YEAR(DateApproved) = 2020
 GROUP BY
 	YEAR(DateApproved)
-
 UNION
-
 SELECT 
 	YEAR(DateApproved),
 	COUNT(LoanNumber) AS Total_Approved_Loans,
@@ -178,7 +177,7 @@ ORDER BY 3 DESC
 
 
 
-/**What is the % of approved loans by the top 15 Industry Sectors, using CTE’s **/
+/**What is the % of approved loans by the top 15 Industry Sectors, using CTEâ€™s **/
 
 ; with CTE AS
 (
